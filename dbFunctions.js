@@ -4,26 +4,28 @@ var mongoose = require('mongoose');
 /* modelo de usuario */
 
 const userSchema = new mongoose.Schema({
-  username: String,
+   username: {
+    type: String,
+    required: true
+  }
 });
 
 const UserModel = mongoose.model('User', userSchema);
 
 function createUser (username) {
 
+
   var user = new UserModel({username: username});
 
-    user.save()
-      .then(doc => {
-        console.log('Creación de usuario ok');
-      })
-      .catch(error => {
-        console.error('Error saving test document:', error);
-      });
+  return user;
 
-    return user;
 };
 
+async function usuarios(){
+  return await UserModel.find();
+}
+
 module.exports = { 
-    createUser: createUser
+    createUser: createUser,
+    usuarios: usuarios
 }

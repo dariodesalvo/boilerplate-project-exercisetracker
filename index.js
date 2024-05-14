@@ -24,9 +24,40 @@ mongoose.connect(process.env.DB)
   .catch((error) => console.error('Connection error', error));
 
 
+app.post('/api/users',async function(req, res) {
+  
+  try {
 
-let dari = dbFunctions.createUser("anto");
-console.log(JSON.stringify({username: dari.username, _id: dari._id.toHexString()}));
+      const username = req.body.username;
+      var newUser = dbFunctions.createUser(username);
+      await newUser.save();
+      res.json({username: newUser.username, _id: newUser._id.toHexString()});
+      
+   } catch (error) {
+       console.log(error);
+       res.send(error.toString());
+   }
+
+});
+
+app.get('/api/users',async function(req, res) {
+  
+  try {
+
+      var usuarios = await dbFunctions.usuarios();
+      
+      let data = usuarios.map(function(element){
+      return {username: element.username, _id: element._id.toHexString()};
+      });   
+      res.send(data);
+      
+   } catch (error) {
+       console.log(error);
+       res.send("Error consultando usuarios");
+   }
+
+});
+
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
